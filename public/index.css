@@ -1,0 +1,42 @@
+#FS_id,#CS_id,#HH_id,#SU_id,#PU_id{
+    margin-left: 10%;
+    margin-right: 7%;
+    width: 30%;
+}
+
+#FS_name,#CS_name,#HH_name,#SU_name,#PU_name{
+    margin-right: 5%;
+    width: 35%;
+}
+
+#insert,#update,#delete,#print{
+    margin-left: 5%;
+    margin-bottom: 2%;
+}
+
+#insert{
+    margin-left: 25%;
+}
+
+#modal_submit,#modal_cancel{
+    margin-left: 7%;
+    margin-top: 5%;
+}
+
+#modal_submit{
+    margin-left: 50%;
+}
+
+.input{
+    margin: 2% 0px;
+    margin-left: 2%;
+}
+
+#TableBlock{
+    margin-left: 2%;
+    width: 90%;
+}
+
+#information{
+    margin-top: 15%;
+}
