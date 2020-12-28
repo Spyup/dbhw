@@ -201,7 +201,8 @@ class Customer extends React.Component {
             CEmail: "",
             CAge: "",
             CDiscount: "",
-            ReadOnly: false
+            ReadOnly: false,
+            CheckState: [],
         })
 
     }
@@ -334,6 +335,12 @@ class Customer extends React.Component {
     }
 
     render() {
+        let Sum = 0, Ave = 0;
+        this.state.customer.forEach(res => {
+            Sum += 1;
+            Ave += parseFloat(res.CAge);
+        });
+        Ave /= Sum;
         return (
             <Container fluid>
                 <Row>
@@ -450,7 +457,7 @@ class Customer extends React.Component {
                         </Modal.Body>
                     </Modal>
                     <Col xs lg="3">
-                        <CSInfoBlock />
+                        <CSInfoBlock Sum={Sum} Ave={Ave} />
                     </Col>
                 </Row>
             </Container>

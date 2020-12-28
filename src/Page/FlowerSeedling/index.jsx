@@ -14,7 +14,6 @@ import ReactToPrint, { PrintContextConsumer } from "react-to-print"
 let isComposition = false;
 const isChrome = navigator.userAgent.indexOf('Chrome') > -1;
 let input_ID = "", input_name = "";
-var Sum = 0, Money = 0;
 
 class FlowerSeedling extends React.Component {
     constructor(props) {
@@ -58,8 +57,7 @@ class FlowerSeedling extends React.Component {
 
     SearchSpecific() {
         const url = "/api/flower/Search/?id=" + this.state.ID + "&name=" + this.state.Name;
-        Money = 0;
-        Sum = 0;
+
         fetch(url)
             .then(function (res) {
                 if (!res.ok) {
@@ -73,16 +71,7 @@ class FlowerSeedling extends React.Component {
                 }
                 return res;
             })
-            .then(data => this.setState({ flower: data.data }, () => {
-                this.state.flower.map(res => {
-                    Sum = Sum + parseInt(res.FSum);
-                    Money = Money + parseFloat(res.FSubTotal);
-                })
-            }
-            ))
-            .then(
-                this.setState((state) => ({ Sum: Sum, Money: Money }))
-            )
+            .then(data => this.setState({ flower: data.data }))
             .catch(function (error) {
                 if (error.message === "查無結果") {
                     alert(error.message);
@@ -215,7 +204,8 @@ class FlowerSeedling extends React.Component {
             FUnit: "",
             FLocate: "",
             FDate: "",
-            ReadOnly: false
+            ReadOnly: false,
+            CheckState: [],
         })
 
     }
@@ -357,6 +347,11 @@ class FlowerSeedling extends React.Component {
 
 
     render() {
+        let Sum = 0, Money = 0;
+        this.state.flower.forEach(res => {
+            Sum = Sum + parseInt(res.FSum);
+            Money = Money + parseFloat(res.FSubTotal);
+        });
         return (
             <Container fluid>
                 <Row>
@@ -491,7 +486,7 @@ class FlowerSeedling extends React.Component {
                         </Modal>
                     </Col>
                     <Col xs lg="3">
-                        <FSInfoBlock Sum={this.state.Sum} Money={this.state.Money} />
+                        <FSInfoBlock Sum={Sum} Money={Money} />
                     </Col>
                 </Row>
             </Container >

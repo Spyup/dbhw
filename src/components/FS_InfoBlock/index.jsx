@@ -1,11 +1,6 @@
 import React from "react"
 
 class FSInfoBlock extends React.Component {
-
-    componentWillReceiveProps() {
-        console.log(this.props.Sum);
-    }
-
     render() {
         return (
             <div id="information">

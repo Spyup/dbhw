@@ -9,6 +9,7 @@ import Form from "react-bootstrap/Form"
 import Table from "react-bootstrap/Table"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
+import ReactToPrint, { PrintContextConsumer } from "react-to-print"
 
 let isComposition = false;
 const isChrome = navigator.userAgent.indexOf('Chrome') > -1;
@@ -25,6 +26,7 @@ class Purchase extends React.Component {
         this.UpdateModal = this.UpdateModal.bind(this);
         this.ChangeChecked = this.ChangeChecked.bind(this);
         this.SeletedChange = this.SeletedChange.bind(this);
+        this.UnShipping = this.UnShipping.bind(this);
     }
 
     handleComposition(event) {
@@ -127,9 +129,6 @@ class Purchase extends React.Component {
                         alert("error");
                     }
                 });
-            fetch("/api/purchase")
-                .then(res => res.json())
-                .then(data => this.setState({ purchase: data.data }));
         }
         else if (this.state.ModalID === "update") {
             fetch("/api/purchase/", {
@@ -158,9 +157,6 @@ class Purchase extends React.Component {
                         alert("error");
                     }
                 });
-            fetch("/api/purchase")
-                .then(res => res.json())
-                .then(data => this.setState({ purchase: data.data }));
         }
         else if (this.state.ModalID === "delete") {
             fetch("/api/purchase/", {
@@ -189,11 +185,11 @@ class Purchase extends React.Component {
                         alert("error");
                     }
                 });
-            fetch("/api/purchase")
-                .then(res => res.json())
-                .then(data => this.setState({ purchase: data.data }));
-        }
 
+        }
+        fetch("/api/purchase")
+            .then(res => res.json())
+            .then(data => this.setState({ purchase: data.data }));
 
         this.setState({
             ModalID: "",
@@ -207,7 +203,8 @@ class Purchase extends React.Component {
             POrder: "",
             PEstimate: "",
             PActual: "",
-            ReadOnly: false
+            ReadOnly: false,
+            CheckState: [],
         })
 
     }
@@ -361,6 +358,24 @@ class Purchase extends React.Component {
 
     }
 
+    UnShipping(event) {
+        if (event.target.checked === true) {
+            var t = [];
+            this.state.purchase.map((item, index) => item.PActualDate === null ? t.push(item) : "");
+            this.setState({ purchase: t });
+        }
+        else {
+            if (this.state.ID === "" && this.state.Name === "") {
+                fetch("/api/purchase")
+                    .then(res => res.json())
+                    .then(data => this.setState({ purchase: data.data }));
+            }
+            else {
+                this.SearchSpecific();
+            }
+        }
+    }
+
     componentDidMount() {
         fetch("/api/purchase")
             .then(res => res.json())
@@ -377,28 +392,44 @@ class Purchase extends React.Component {
     }
 
     render() {
+        let Sum = 0, Before_Money = 0, After_Money = 0;
+        this.state.purchase.forEach(res => {
+            Sum += parseInt(res.PQuantity);
+            if (res.PActualDate === "0000-00-00")
+                Before_Money += parseFloat(res.PAfterDiscount);
+            else
+                After_Money += parseFloat(res.PAfterDiscount);
+        });
         return (
-            <Container fluid id="showblock">
-                <Row>
+            <Container fluid id="showblock" ref={el => (this.componentRef = el)}>
+                <Row  >
                     <Col>
                         <Form>
                             <Form.Row className="input">
                                 <InputGroup id="PU_id">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>編號</InputGroup.Text>
+                                        <InputGroup.Text>花草苗木編號</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="input-ID" onChange={this.handleInputeChange} onCompositionStart={this.handleComposition} onCompositionEnd={this.handleComposition} />
                                 </InputGroup>
                                 <InputGroup id="PU_name">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>花草苗木名稱</InputGroup.Text>
+                                        <InputGroup.Text>客戶統一編號/身份證字號</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl id="input-name" onChange={this.handleInputeChange} onCompositionStart={this.handleComposition} onCompositionEnd={this.handleComposition} />
                                 </InputGroup>
+                                <Form.Check type="checkbox" id="customControlAutosizing" label="未出貨" custom onChange={this.UnShipping} />
                             </Form.Row>
                             <Button variant="primary" id="insert" onClick={this.UpdateModal}>新增</Button>
                             <Button variant="primary" id="update" onClick={this.UpdateModal}>修改</Button>
                             <Button variant="primary" id="delete" onClick={this.UpdateModal}>刪除</Button>
+                            <ReactToPrint content={() => this.componentRef}>
+                                <PrintContextConsumer>
+                                    {({ handlePrint }) => (
+                                        <Button variant="primary" id="print" onClick={handlePrint}>列印</Button>
+                                    )}
+                                </PrintContextConsumer>
+                            </ReactToPrint>
                             <Form.Row className="table">
                                 <Table striped bordered hover id="TableBlock">
                                     <thead>
@@ -421,7 +452,6 @@ class Purchase extends React.Component {
                                             this.state.purchase.map(res =>
                                                 <tr key={res.PID}>
                                                     <td><Form.Check id={res.PID} onChange={this.ChangeChecked} /></td>
-
                                                     <td>{res.P_FID}</td>
                                                     <td>{res.P_FName}</td>
                                                     <td>{res.P_CID}</td>
@@ -453,7 +483,7 @@ class Purchase extends React.Component {
                                     <FormControl as="select" name="inputID" defaultValue={this.state.P_FID} onChange={this.SeletedChange} readOnly={this.state.ReadOnly}>
                                         {
                                             this.state.flower.map(res =>
-                                                <option value={res.FID}>{res.FID}</option>
+                                                <option key={res.FID} value={res.FID}>{res.FID}</option>
                                             )
                                         }
                                     </FormControl>
@@ -471,7 +501,7 @@ class Purchase extends React.Component {
                                     <FormControl as="select" name="inputCID" defaultValue={this.state.P_CID} >
                                         {
                                             this.state.customer.map(res =>
-                                                <option value={res.CID}>{res.CID}</option>
+                                                <option key={res.CID} value={res.CID}>{res.CID}</option>
                                             )
                                         }
                                     </FormControl>
@@ -483,7 +513,7 @@ class Purchase extends React.Component {
                                     <FormControl as="select" name="inputSName" defaultValue={this.state.P_SName} >
                                         {
                                             this.state.supplier.map(res =>
-                                                <option value={res.SName}>{res.SName}</option>
+                                                <option key={res.STaxNumber} value={res.SName}>{res.SName}</option>
                                             )
                                         }
                                     </FormControl>
@@ -524,7 +554,7 @@ class Purchase extends React.Component {
                         </Modal.Body>
                     </Modal>
                     <Col xs lg="3">
-                        <PCInfoBlock />
+                        <PCInfoBlock Sum={Sum} Before_Money={Before_Money} After_Money={After_Money} />
                     </Col>
                 </Row>
             </Container>

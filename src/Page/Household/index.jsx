@@ -376,6 +376,11 @@ class Household extends React.Component {
 
 
     render() {
+        let Sum = 0, Ave = 0;
+        this.state.household.forEach(res => {
+            Sum += 1;
+            Ave += parseFloat(res.CAge);
+        });
         return (
             <Container fluid>
                 <Row>
@@ -492,7 +497,7 @@ class Household extends React.Component {
                         </Modal.Body>
                     </Modal>
                     <Col xs lg="3">
-                        <HHInfoBlock />
+                        <HHInfoBlock Sum={Sum} Ave={Ave} />
                     </Col>
                 </Row>
             </Container>

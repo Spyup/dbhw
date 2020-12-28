@@ -197,7 +197,8 @@ class Supplier extends React.Component {
             SPhone: "",
             SEmail: "",
             SPrincipal: "",
-            ReadOnly: false
+            ReadOnly: false,
+            CheckState: [],
         })
 
     }
@@ -314,6 +315,13 @@ class Supplier extends React.Component {
     }
 
     render() {
+        let Sum = 0, Email = 0, Principal = 0;
+        let Email_Map = {}, Principal_Map = {};
+        this.state.supplier.forEach(res => {
+            Sum += 1;
+            Email_Map[res.SEmail] = Email_Map[res.SEmail] ? Email++ : 1;
+            Principal_Map[res.SPrincipal] = Principal_Map[res.SPrincipal] ? Principal++ : 1;
+        });
         return (
             <Container fluid id="showblock">
                 <Row>
@@ -408,7 +416,7 @@ class Supplier extends React.Component {
                         </Modal.Body>
                     </Modal>
                     <Col xs lg="3">
-                        <SPInfoBlock />
+                        <SPInfoBlock Sum={Sum} Email={Email} Principal={Principal} />
                     </Col>
                 </Row>
             </Container>
