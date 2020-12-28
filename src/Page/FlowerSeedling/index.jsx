@@ -78,10 +78,10 @@ class FlowerSeedling extends React.Component {
                     Sum = Sum + parseInt(res.FSum);
                     Money = Money + parseFloat(res.FSubTotal);
                 })
-            }, console.log(this.state.Sum)
+            }
             ))
             .then(
-                this.setState((state) => ({ Sum: Sum, Money: Money }, console.log(this.state.Sum)))
+                this.setState((state) => ({ Sum: Sum, Money: Money }))
             )
             .catch(function (error) {
                 if (error.message === "查無結果") {
