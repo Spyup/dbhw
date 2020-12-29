@@ -5,8 +5,8 @@ class FSInfoBlock extends React.Component {
         return (
             <div id="information">
                 <h1>統計資訊</h1>
-                <p>總數量{this.props.Sum}</p>
-                <p>總金額 {this.props.Money}</p>
+                <p>總數量  ：{this.props.Sum}</p>
+                <p>總金額  ： {this.props.Money}</p>
             </div>
         )
     }

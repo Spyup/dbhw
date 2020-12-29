@@ -9,6 +9,7 @@ import Form from "react-bootstrap/Form"
 import Table from "react-bootstrap/Table"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
+import ReactToPrint, { PrintContextConsumer } from "react-to-print"
 
 let isComposition = false;
 const isChrome = navigator.userAgent.indexOf('Chrome') > -1;
@@ -323,7 +324,7 @@ class Supplier extends React.Component {
             Principal_Map[res.SPrincipal] = Principal_Map[res.SPrincipal] ? Principal++ : 1;
         });
         return (
-            <Container fluid id="showblock">
+            <Container fluid id="showblock" ref={el => (this.componentRef = el)}>
                 <Row>
                     <Col>
                         <Form>
@@ -344,6 +345,13 @@ class Supplier extends React.Component {
                             <Button variant="primary" id="insert" onClick={this.UpdateModal}>新增</Button>
                             <Button variant="primary" id="update" onClick={this.UpdateModal}>修改</Button>
                             <Button variant="primary" id="delete" onClick={this.UpdateModal}>刪除</Button>
+                            <ReactToPrint content={() => this.componentRef}>
+                                <PrintContextConsumer>
+                                    {({ handlePrint }) => (
+                                        <Button variant="primary" id="print" onClick={handlePrint}>列印</Button>
+                                    )}
+                                </PrintContextConsumer>
+                            </ReactToPrint>
                             <Form.Row className="table">
                                 <Table striped bordered hover id="TableBlock">
                                     <thead>

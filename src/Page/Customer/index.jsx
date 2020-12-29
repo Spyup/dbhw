@@ -9,6 +9,7 @@ import Form from "react-bootstrap/Form"
 import Table from "react-bootstrap/Table"
 import Modal from "react-bootstrap/Modal"
 import Button from "react-bootstrap/Button"
+import ReactToPrint, { PrintContextConsumer } from "react-to-print"
 
 let isComposition = false;
 const isChrome = navigator.userAgent.indexOf('Chrome') > -1;
@@ -342,7 +343,7 @@ class Customer extends React.Component {
         });
         Ave /= Sum;
         return (
-            <Container fluid>
+            <Container fluid ref={el => (this.componentRef = el)}>
                 <Row>
                     <Col>
                         <Form>
@@ -363,13 +364,20 @@ class Customer extends React.Component {
                             <Button variant="primary" id="insert" onClick={this.UpdateModal}>新增</Button>
                             <Button variant="primary" id="update" onClick={this.UpdateModal}>修改</Button>
                             <Button variant="primary" id="delete" onClick={this.UpdateModal}>刪除</Button>
+                            <ReactToPrint content={() => this.componentRef}>
+                                <PrintContextConsumer>
+                                    {({ handlePrint }) => (
+                                        <Button variant="primary" id="print" onClick={handlePrint}>列印</Button>
+                                    )}
+                                </PrintContextConsumer>
+                            </ReactToPrint>
                             <Form.Row className="table">
                                 <Table striped bordered hover id="TableBlock">
                                     <thead>
                                         <tr>
                                             <th></th>
-                                            <th>姓名</th>
                                             <th>身份證字號/統一編號</th>
+                                            <th>姓名</th>
                                             <th>生日</th>
                                             <th>電話</th>
                                             <th>E-mail</th>

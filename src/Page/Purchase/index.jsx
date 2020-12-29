@@ -395,11 +395,12 @@ class Purchase extends React.Component {
         let Sum = 0, Before_Money = 0, After_Money = 0;
         this.state.purchase.forEach(res => {
             Sum += parseInt(res.PQuantity);
-            if (res.PActualDate === "0000-00-00")
+            if (res.PActualDate === "0000-00-00" || res.PActualDate === null)
                 Before_Money += parseFloat(res.PAfterDiscount);
             else
                 After_Money += parseFloat(res.PAfterDiscount);
         });
+
         return (
             <Container fluid id="showblock" ref={el => (this.componentRef = el)}>
                 <Row  >

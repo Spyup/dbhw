@@ -33,7 +33,7 @@ class TopBlock extends React.Component {
                 <Row>
                     <Col>
                         <Navbar bg="light" variant="light">
-                            <Navbar.Brand to="/">Navbar</Navbar.Brand>
+                            <Navbar.Brand to="/">東海園藝公司</Navbar.Brand>
                             <Nav className="mr-auto">
                                 <BookMark to="/" name="花草苗木資料表" />
                                 <BookMark to="/customer" name="客戶資料表" />
@@ -41,7 +41,6 @@ class TopBlock extends React.Component {
                                 <BookMark to="/supplier" name="供應商資料表" />
                                 <BookMark to="/purchase" name="客戶購買資料表" />
                             </Nav>
-                            <TopSearch />
                         </Navbar>
                     </Col>
                 </Row>
